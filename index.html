@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ganancias - Quick Trade</title>
+    <style>
+        /* Estilos generales */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden; /* Evita el scroll horizontal */
+            background-color: #121212; /* Fondo oscuro general */
+        }
+        
+        /* Contenedor del cardview */
+        .container {
+            width: 50%;
+            max-width: 600px;
+            background-color: rgba(28, 28, 28, 0.85); /* Fondo oscuro con opacidad para ver el video detrás */
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            position: relative;
+            color: white; /* Texto blanco */
+            text-align: center;
+            z-index: 1;
+            border: 2px solid #FFD700; /* Borde dorado */
+            margin: 20px auto; /* Asegura que el cardview esté centrado y con margen */
+        }
+
+        h1 {
+            color: #FFD700; /* Color dorado */
+            font-family: 'Arial', sans-serif;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #ccc; /* Gris claro */
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background-color: #222; /* Fondo oscuro para inputs */
+            color: white;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus, button:focus {
+            border-color: #FFD700; /* Borde dorado al hacer foco */
+            outline: none;
+        }
+
+        /* Animación de botones */
+        button {
+            background-color: #FFD700; /* Botón dorado */
+            color: #121212; /* Texto oscuro */
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease; /* Transición suave */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Efecto de animación cuando se pasa el mouse por encima */
+        button:hover {
+            background-color: #FFC107; /* Botón dorado con hover más claro */
+            transform: scale(1.1); /* Aumenta el tamaño del botón */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Sombra más intensa */
+        }
+
+        button:active {
+            transform: scale(0.98); /* Reduce ligeramente el tamaño al hacer clic */
+        }
+
+        .result {
+            background-color: #333; /* Fondo gris oscuro para los resultados */
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .month-result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #444; /* Fondo más oscuro para cada mes */
+            border-radius: 6px;
+        }
+
+        .month-result span {
+            font-weight: bold;
+            color: #FFD700; /* Color dorado para resaltar las cantidades */
+        }
+
+        /* Asegura que la página tenga scroll si es necesario */
+        .content-wrapper {
+            max-width: 100%;
+            height: auto;
+            min-height: 100vh; /* Al menos 100% de la altura de la pantalla */
+            overflow-y: auto; /* Permite desplazamiento vertical */
+        }
+
+        /* Estilo para las notas */
+        .notes {
+            width: 50%;
+            max-width: 600px;
+            background-color: rgba(28, 28, 28, 0.8); /* Fondo oscuro transparente */
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            color: white;
+            text-align: left;
+            margin-top: 20px; /* Añadir espacio en la parte superior */
+        }
+
+        /* Texto de las notas */
+        .notes p {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<!-- Contenedor principal -->
+<div class="content-wrapper">
+    <!-- Notas sobre las cuentas -->
+    <div class="notes">
+        <p><strong>Cuenta Estándar:</strong> Mín. 5,000€ | Ganancia: 5%</p>
+        <p><strong>Cuenta VIP:</strong> Mín. 7,000€ | Ganancia: 5% + 3% Bola de Nieve</p>
+        <p><strong>Cuenta Gold:</strong> Mín. 10,000€ | Ganancia: 5% + 5% Bola de Nieve</p>
+        <p><strong>Cuenta Platino:</strong> Mín. 25,000€ | Ganancia: 5% + 7% Bola de Nieve</p>
+        <p><strong>Cuenta Super Prime:</strong> Mín. 100,000€ | Ganancia: 5% + 10% Bola de Nieve</p>
+    </div>
+
+    <div class="container">
+        <h1>Calculadora de Ganancias - Quick Trade</h1>
+        <!-- Input para monto inicial -->
+        <label for="monto">Monto Inicial:</label>
+        <input type="number" id="monto" placeholder="Ingrese el monto inicial" required>
+        <!-- Input para porcentaje de ganancia mensual -->
+        <label for="ganancia">Ganancia mensual (%)</label>
+        <input type="number" id="ganancia" placeholder="Porcentaje de ganancia mensual" required>
+        <!-- Opción de Efecto Bola de Nieve -->
+        <label for="bolaNieve">Efecto Bola de Nieve:</label>
+        <select id="bolaNieve">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+        </select>
+        <!-- Input para el porcentaje del efecto bola de nieve -->
+        <label for="porcentajeBola">Porcentaje de bola de nieve (%)</label>
+        <input type="number" id="porcentajeBola" placeholder="Porcentaje de bola de nieve" disabled>
+        <!-- Botón para calcular -->
+        <button onclick="calcularGanancias()">Calcular</button>
+        <!-- Resultados -->
+        <div class="result" id="resultados" style="display: none;">
+            <h3>Resultados:</h3>
+            <p id="gananciaMensual"></p>
+            <div id="mesesGanancias"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mostrar el campo de porcentaje de bola de nieve solo si se selecciona "Sí"
+    document.getElementById('bolaNieve').addEventListener('change', function() {
+        let porcentajeBola = document.getElementById('porcentajeBola');
+        if (this.value === 'si') {
+            porcentajeBola.disabled = false;
+        } else {
+            porcentajeBola.disabled = true;
+        }
+    });
+
+    // Función para calcular las ganancias
+    function calcularGanancias() {
+        const monto = parseFloat(document.getElementById('monto').value);
+        const gananciaMensual = parseFloat(document.getElementById('ganancia').value) / 100;
+        const efectoBolaNieve = document.getElementById('bolaNieve').value === 'si';
+        const porcentajeBola = efectoBolaNieve ? parseFloat(document.getElementById('porcentajeBola').value) / 100 : 0;
+        
+        if (isNaN(monto) || isNaN(gananciaMensual)) {
+            alert("Por favor, ingresa valores válidos para el monto y la ganancia.");
+            return;
+        }
+
+        // Variables para el cálculo de ganancias
+        let total = monto;
+        let ganancias = [];
+        let mes = new Date();
+        mes.setMonth(mes.getMonth() + 1); // Empezamos desde el mes siguiente
+        for (let i = 1; i <= 12; i++) {
+            let ganancia = total * gananciaMensual;
+            if (efectoBolaNieve) {
+                total += ganancia * porcentajeBola; // Aplica el efecto bola de nieve
+            }
+            total += ganancia; // Agrega la ganancia mensual al total
+            let fecha = mes.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+            ganancias.push(`${fecha}: $${ganancia.toFixed(2)} (Total: $${total.toFixed(2)})`);
+            mes.setMonth(mes.getMonth() + 1); // Avanza al siguiente mes
+        }
+
+        // Mostrar los resultados
+        document.getElementById('resultados').style.display = 'block';
+        document.getElementById('gananciaMensual').textContent = `Ganancia mensual estimada: $${(monto * gananciaMensual).toFixed(2)}`;
+        // Mostrar las ganancias mensuales por 12 meses
+        let mesesGanancias = document.getElementById('mesesGanancias');
+        mesesGanancias.innerHTML = ganancias.map(ganancia => `<div class="month-result">${ganancia}</div>`).join('');
+    }
+</script>
+
+</body>
+</html>
