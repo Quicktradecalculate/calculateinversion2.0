@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Ganancias - Quick Trade</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Incluir Chart.js desde un CDN -->
     <style>
         /* Estilos generales */
         body, html {
@@ -11,9 +12,19 @@
             padding: 0;
             height: 100%;
             overflow-x: hidden; /* Evita el scroll horizontal */
-            background-color: #121212; /* Fondo oscuro general */
         }
-        
+
+        /* Video de fondo */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* Asegura que el video quede en segundo plano */
+        }
+
         /* Contenedor del cardview */
         .container {
             width: 50%;
@@ -103,14 +114,6 @@
             color: #FFD700; /* Color dorado para resaltar las cantidades */
         }
 
-        /* Asegura que la página tenga scroll si es necesario */
-        .content-wrapper {
-            max-width: 100%;
-            height: auto;
-            min-height: 100vh; /* Al menos 100% de la altura de la pantalla */
-            overflow-y: auto; /* Permite desplazamiento vertical */
-        }
-
         /* Estilo para las notas */
         .notes {
             width: 50%;
@@ -165,92 +168,128 @@
     </style>
 </head>
 <body>
-<!-- Contenedor principal -->
-<div class="content-wrapper">
-    <!-- Notas sobre las cuentas -->
-    <div class="notes">
-        <p class="account"><strong class="account-name">Cuenta Estándar:</strong> <span class="account-details">Mín. 5,000€ | Ganancia: 5%</span></p>
-        <p class="account"><strong class="account-name">Cuenta VIP:</strong> <span class="account-details">Mín. 7,000€ | Ganancia: 5% + 3% Bola de Nieve</span></p>
-        <p class="account"><strong class="account-name">Cuenta Gold:</strong> <span class="account-details">Mín. 10,000€ | Ganancia: 5% + 5% Bola de Nieve</span></p>
-        <p class="account"><strong class="account-name">Cuenta Platino:</strong> <span class="account-details">Mín. 25,000€ | Ganancia: 5% + 7% Bola de Nieve</span></p>
-        <p class="account"><strong class="account-name">Cuenta Super Prime:</strong> <span class="account-details">Mín. 100,000€ | Ganancia: 5% + 10% Bola de Nieve</span></p>
-    </div>
+    <!-- Video de fondo -->
+    <video id="video-background" autoplay muted loop>
+        <source src="https://videos.pexels.com/video-files/27034803/12052488_2560_1440_30fps.mp4" type="video/mp4">
+        Tu navegador no soporta el video.
+    </video>
 
-    <div class="container">
-        <h1>Calculadora de Ganancias - Quick Trade</h1>
-        <!-- Input para monto inicial -->
-        <label for="monto">Monto Inicial:</label>
-        <input type="number" id="monto" placeholder="Ingrese el monto inicial" required>
-        <!-- Input para porcentaje de ganancia mensual -->
-        <label for="ganancia">Ganancia mensual (%)</label>
-        <input type="number" id="ganancia" placeholder="Porcentaje de ganancia mensual" required>
-        <!-- Opción de Efecto Bola de Nieve -->
-        <label for="bolaNieve">Efecto Bola de Nieve:</label>
-        <select id="bolaNieve">
-            <option value="no">No</option>
-            <option value="si">Sí</option>
-        </select>
-        <!-- Input para el porcentaje del efecto bola de nieve -->
-        <label for="porcentajeBola">Porcentaje de bola de nieve (%)</label>
-        <input type="number" id="porcentajeBola" placeholder="Porcentaje de bola de nieve" disabled>
-        <!-- Botón para calcular -->
-        <button onclick="calcularGanancias()">Calcular</button>
-        <!-- Resultados -->
-        <div class="result" id="resultados" style="display: none;">
-            <h3>Resultados:</h3>
-            <p id="gananciaMensual"></p>
-            <div id="mesesGanancias"></div>
+    <!-- Contenedor principal -->
+    <div class="content-wrapper">
+        <!-- Notas sobre las cuentas -->
+        <div class="notes">
+            <p class="account"><strong class="account-name">Cuenta Estándar:</strong> <span class="account-details">Mín. 5,000€ | Ganancia: 5%</span></p>
+            <p class="account"><strong class="account-name">Cuenta VIP:</strong> <span class="account-details">Mín. 7,000€ | Ganancia: 5% + 3% Bola de Nieve</span></p>
+            <p class="account"><strong class="account-name">Cuenta Gold:</strong> <span class="account-details">Mín. 10,000€ | Ganancia: 5% + 5% Bola de Nieve</span></p>
+            <p class="account"><strong class="account-name">Cuenta Platino:</strong> <span class="account-details">Mín. 25,000€ | Ganancia: 5% + 7% Bola de Nieve</span></p>
+            <p class="account"><strong class="account-name">Cuenta Super Prime:</strong> <span class="account-details">Mín. 100,000€ | Ganancia: 5% + 10% Bola de Nieve</span></p>
+        </div>
+
+        <div class="container">
+            <h1>Calculadora de Ganancias - Quick Trade</h1>
+            <!-- Input para monto inicial -->
+            <label for="monto">Monto Inicial:</label>
+            <input type="number" id="monto" placeholder="Ingrese el monto inicial" required>
+            <!-- Input para porcentaje de ganancia mensual -->
+            <label for="ganancia">Ganancia mensual (%)</label>
+            <input type="number" id="ganancia" placeholder="Porcentaje de ganancia mensual" required>
+            <!-- Opción de Efecto Bola de Nieve -->
+            <label for="bolaNieve">Efecto Bola de Nieve:</label>
+            <select id="bolaNieve">
+                <option value="no">No</option>
+                <option value="si">Sí</option>
+            </select>
+            <!-- Input para el porcentaje del efecto bola de nieve -->
+            <label for="porcentajeBola">Porcentaje de bola de nieve (%)</label>
+            <input type="number" id="porcentajeBola" placeholder="Porcentaje de bola de nieve" disabled>
+            <!-- Botón para calcular -->
+            <button onclick="calcularGanancias()">Calcular</button>
+            <!-- Resultados -->
+            <div class="result" id="resultados" style="display: none;">
+                <h3>Resultados:</h3>
+                <p id="gananciaMensual"></p>
+                <canvas id="gananciasChart" width="400" height="200"></canvas> <!-- Canvas para la gráfica -->
+                <div id="resultadosMensuales"></div> <!-- Aquí se mostrarán las ganancias mensuales -->
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Mostrar el campo de porcentaje de bola de nieve solo si se selecciona "Sí"
-    document.getElementById('bolaNieve').addEventListener('change', function() {
-        let porcentajeBola = document.getElementById('porcentajeBola');
-        if (this.value === 'si') {
-            porcentajeBola.disabled = false;
-        } else {
-            porcentajeBola.disabled = true;
-        }
-    });
-
-    // Función para calcular las ganancias
-    function calcularGanancias() {
-        const monto = parseFloat(document.getElementById('monto').value);
-        const gananciaMensual = parseFloat(document.getElementById('ganancia').value) / 100;
-        const efectoBolaNieve = document.getElementById('bolaNieve').value === 'si';
-        const porcentajeBola = efectoBolaNieve ? parseFloat(document.getElementById('porcentajeBola').value) / 100 : 0;
-        
-        if (isNaN(monto) || isNaN(gananciaMensual)) {
-            alert("Por favor, ingresa valores válidos para el monto y la ganancia.");
-            return;
-        }
-
-        // Variables para el cálculo de ganancias
-        let total = monto;
-        let ganancias = [];
-        let mes = new Date();
-        mes.setMonth(mes.getMonth() + 1); // Empezamos desde el mes siguiente
-        for (let i = 1; i <= 12; i++) {
-            let ganancia = total * gananciaMensual;
-            if (efectoBolaNieve) {
-                total += ganancia * porcentajeBola; // Aplica el efecto bola de nieve
+    <script>
+        // Mostrar el campo de porcentaje de bola de nieve solo si se selecciona "Sí"
+        document.getElementById('bolaNieve').addEventListener('change', function() {
+            let porcentajeBola = document.getElementById('porcentajeBola');
+            if (this.value === 'si') {
+                porcentajeBola.disabled = false;
+            } else {
+                porcentajeBola.disabled = true;
             }
-            total += ganancia; // Agrega la ganancia mensual al total
-            let fecha = mes.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
-            ganancias.push(`${fecha}: $${ganancia.toFixed(2)} (Total: $${total.toFixed(2)})`);
-            mes.setMonth(mes.getMonth() + 1); // Avanza al siguiente mes
+        });
+
+        // Función para calcular las ganancias
+        function calcularGanancias() {
+            const monto = parseFloat(document.getElementById('monto').value);
+            const gananciaMensual = parseFloat(document.getElementById('ganancia').value) / 100;
+            const efectoBolaNieve = document.getElementById('bolaNieve').value === 'si';
+            const porcentajeBola = efectoBolaNieve ? parseFloat(document.getElementById('porcentajeBola').value) / 100 : 0;
+            
+            if (isNaN(monto) || isNaN(gananciaMensual)) {
+                alert("Por favor, ingresa valores válidos para el monto y la ganancia.");
+                return;
+            }
+
+            // Variables para el cálculo de ganancias
+            let total = monto;
+            let ganancias = [];
+            let gananciasMensuales = [];
+            let mes = new Date();
+            mes.setMonth(mes.getMonth() + 1); // Empezamos desde el mes siguiente
+            const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            
+            for (let i = 0; i < 12; i++) {
+                let ganancia = total * gananciaMensual;
+                if (efectoBolaNieve) {
+                    total += ganancia * porcentajeBola; // Aplica el efecto bola de nieve
+                }
+                total += ganancia; // Agrega la ganancia mensual al total
+                ganancias.push(total); // Guarda el total después de la ganancia mensual
+                gananciasMensuales.push(`Mes ${meses[i]}: $${total.toFixed(2)}`);
+            }
+
+            // Mostrar los resultados
+            document.getElementById('resultados').style.display = 'block';
+            document.getElementById('gananciaMensual').textContent = `Ganancia mensual estimada: $${(monto * gananciaMensual).toFixed(2)}`;
+
+            // Crear la gráfica usando Chart.js
+            const ctx = document.getElementById('gananciasChart').getContext('2d');
+            const gananciasChart = new Chart(ctx, {
+                type: 'bar', // Tipo de gráfica (barra)
+                data: {
+                    labels: meses, // Meses en español
+                    datasets: [{
+                        label: 'Ganancia Total por Mes',
+                        data: ganancias, // Datos de las ganancias
+                        backgroundColor: '#FFD700', // Color de las barras
+                        borderColor: '#FFC107', // Color del borde
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Mostrar las ganancias mensuales
+            let resultadosMensualesHTML = "<h4>Ganancias Mensuales:</h4>";
+            gananciasMensuales.forEach(function(ganancia) {
+                resultadosMensualesHTML += `<div class="month-result"><span>${ganancia}</span></div>`;
+            });
+            document.getElementById('resultadosMensuales').innerHTML = resultadosMensualesHTML;
         }
-
-        // Mostrar los resultados
-        document.getElementById('resultados').style.display = 'block';
-        document.getElementById('gananciaMensual').textContent = `Ganancia mensual estimada: $${(monto * gananciaMensual).toFixed(2)}`;
-        // Mostrar las ganancias mensuales por 12 meses
-        let mesesGanancias = document.getElementById('mesesGanancias');
-        mesesGanancias.innerHTML = ganancias.map(ganancia => `<div class="month-result">${ganancia}</div>`).join('');
-    }
-</script>
-
+    </script>
 </body>
 </html>
