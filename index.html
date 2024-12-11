@@ -115,19 +115,52 @@
         .notes {
             width: 50%;
             max-width: 600px;
-            background-color: rgba(28, 28, 28, 0.8); /* Fondo oscuro transparente */
-            padding: 20px;
-            border-radius: 10px;
+            background-color: rgba(28, 28, 28, 0.9); /* Fondo oscuro con mayor opacidad */
+            padding: 25px;
+            border-radius: 12px;
             margin: 20px auto;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
             color: white;
             text-align: left;
-            margin-top: 20px; /* Añadir espacio en la parte superior */
+            font-size: 16px;
+            line-height: 1.6;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
-        /* Texto de las notas */
+        .notes:hover {
+            transform: scale(1.03); /* Le da un pequeño efecto de aumento al pasar el mouse */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8); /* Aumenta la sombra para hacerlo más llamativo */
+        }
+
         .notes p {
-            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .notes p strong {
+            color: #FFD700; /* Resalta los encabezados con color dorado */
+            font-weight: bold;
+        }
+
+        /* Estilos para las diferentes cuentas */
+        .notes p:before {
+            content: "💰 "; /* Icono de dinero al inicio de cada cuenta */
+            font-size: 20px;
+            color: #FFD700; /* Dorado para los íconos */
+        }
+
+        /* Estilo para las cuentas específicas */
+        .account {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .account .account-name {
+            color: #FFD700; /* Color dorado para el nombre de la cuenta */
+        }
+
+        .account .account-details {
+            color: #ccc; /* Gris claro para los detalles */
         }
     </style>
 </head>
@@ -136,11 +169,11 @@
 <div class="content-wrapper">
     <!-- Notas sobre las cuentas -->
     <div class="notes">
-        <p><strong>Cuenta Estándar:</strong> Mín. 5,000€ | Ganancia: 5%</p>
-        <p><strong>Cuenta VIP:</strong> Mín. 7,000€ | Ganancia: 5% + 3% Bola de Nieve</p>
-        <p><strong>Cuenta Gold:</strong> Mín. 10,000€ | Ganancia: 5% + 5% Bola de Nieve</p>
-        <p><strong>Cuenta Platino:</strong> Mín. 25,000€ | Ganancia: 5% + 7% Bola de Nieve</p>
-        <p><strong>Cuenta Super Prime:</strong> Mín. 100,000€ | Ganancia: 5% + 10% Bola de Nieve</p>
+        <p class="account"><strong class="account-name">Cuenta Estándar:</strong> <span class="account-details">Mín. 5,000€ | Ganancia: 5%</span></p>
+        <p class="account"><strong class="account-name">Cuenta VIP:</strong> <span class="account-details">Mín. 7,000€ | Ganancia: 5% + 3% Bola de Nieve</span></p>
+        <p class="account"><strong class="account-name">Cuenta Gold:</strong> <span class="account-details">Mín. 10,000€ | Ganancia: 5% + 5% Bola de Nieve</span></p>
+        <p class="account"><strong class="account-name">Cuenta Platino:</strong> <span class="account-details">Mín. 25,000€ | Ganancia: 5% + 7% Bola de Nieve</span></p>
+        <p class="account"><strong class="account-name">Cuenta Super Prime:</strong> <span class="account-details">Mín. 100,000€ | Ganancia: 5% + 10% Bola de Nieve</span></p>
     </div>
 
     <div class="container">
